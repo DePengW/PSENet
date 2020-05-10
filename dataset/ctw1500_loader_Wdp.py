@@ -112,19 +112,14 @@ def random_rotate_points(bboxes, img):
         for i in range(len(bboxes[idx])):
             bboxes[idx][i] = np.array([rotate_position(angle, pos[0], pos[1], x_center, y_center) for pos in bboxes[idx][i]])
         
-        # #解决越界问题
-        # clip = np.array(((0, 0), (0, h), (w, h), (w, 0))) 
-        # pc = pyclipper.Pyclipper()
-        # pc.AddPath(clip, pyclipper.PT_CLIP, True)
-        # pc.AddPaths(bboxes[idx], pyclipper.PT_SUBJECT, True)   
-        # bbox_rotate = pc.Execute(pyclipper.CT_INTERSECTION, pyclipper.PFT_EVENODD)
-        # bboxes_rotate.append(np.array(bbox_rotate))
-    clip = np.array(((0, 0), (0, h), (w, h), (w, 0))) 
-    pc = pyclipper.Pyclipper()
-    pc.AddPath(clip, pyclipper.PT_CLIP, True)
-    pc.AddPaths(bboxes, pyclipper.PT_SUBJECT, True)   
-    bboxes_rotate = pc.Execute(pyclipper.CT_INTERSECTION, pyclipper.PFT_EVENODD)
-    
+        #解决越界问题
+        clip = np.array(((0, 0), (0, h), (w, h), (w, 0))) 
+        pc = pyclipper.Pyclipper()
+        pc.AddPath(clip, pyclipper.PT_CLIP, True)
+        pc.AddPaths(bboxes[idx], pyclipper.PT_SUBJECT, True)   
+        bbox_rotate = pc.Execute(pyclipper.CT_INTERSECTION, pyclipper.PFT_EVENODD)
+        bboxes_rotate.append(np.array(bbox_rotate))
+
     return bboxes_rotate, angle
 
 def rotate_position(angle, x, y, x_center, y_center):
